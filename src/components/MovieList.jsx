@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import MovieCard from './MovieCard';
+import CategorySection from './CategorySection';
 import { getMovies } from '../services/api';
 import './MovieList.css';
 
 /**
- * MovieList component for displaying the front page with a grid of movies
+ * MovieList component for displaying multiple categories of movies
  */
 const MovieList = ({ onMovieClick }) => {
-  const [movies, setMovies] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -22,20 +22,23 @@ const MovieList = ({ onMovieClick }) => {
       
       const data = await getMovies();
       
-      // Extract movies from the TV2 API response structure
-      let movieList = [];
+      // Extract categories (feeds) from the TV2 API response structure
+      let categoryList = [];
       
-      if (data?.feeds && data.feeds.length > 0 && data.feeds[0].content) {
-        movieList = data.feeds[0].content;
+      if (data?.feeds && Array.isArray(data.feeds)) {
+        categoryList = data.feeds.filter(feed => feed.content && feed.content.length > 0);
       } else if (data?.items) {
-        movieList = data.items;
+        // Fallback: treat as single category
+        categoryList = [{ content: data.items, section_title: 'Movies' }];
       } else if (data?.content) {
-        movieList = data.content;
+        // Fallback: treat as single category
+        categoryList = [{ content: data.content, section_title: 'Movies' }];
       } else if (Array.isArray(data)) {
-        movieList = data;
+        // Fallback: treat as single category
+        categoryList = [{ content: data, section_title: 'Movies' }];
       }
       
-      setMovies(movieList);
+      setCategories(categoryList);
       
     } catch (err) {
       console.error('Failed to fetch movies:', err);
@@ -56,14 +59,25 @@ const MovieList = ({ onMovieClick }) => {
           <h1>TV 2 Play Films</h1>
           <p>Loading movies...</p>
         </div>
-        <div className="movie-list__grid">
-          {/* Loading skeleton */}
-          {Array.from({ length: 8 }).map((_, index) => (
-            <div key={index} className="movie-card movie-card--loading">
-              <div className="movie-card__image-container"></div>
-              <div className="movie-card__content">
-                <div className="movie-card__title"></div>
-                <div className="movie-card__description"></div>
+        <div className="movie-list__loading">
+          {/* Loading skeleton for categories */}
+          {Array.from({ length: 3 }).map((_, categoryIndex) => (
+            <div key={categoryIndex} className="category-section">
+              <div className="category-section__header">
+                <div className="category-section__title category-section__title--loading"></div>
+              </div>
+              <div className="category-section__movies">
+                {Array.from({ length: 5 }).map((_, index) => (
+                  <div key={index} className="category-section__movie-item">
+                    <div className="movie-card movie-card--loading">
+                      <div className="movie-card__image-container"></div>
+                      <div className="movie-card__content">
+                        <div className="movie-card__title"></div>
+                        <div className="movie-card__description"></div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           ))}
@@ -89,7 +103,7 @@ const MovieList = ({ onMovieClick }) => {
     );
   }
 
-  if (!movies || movies.length === 0) {
+  if (!categories || categories.length === 0) {
     return (
       <div className="movie-list">
         <div className="movie-list__header">
@@ -110,15 +124,15 @@ const MovieList = ({ onMovieClick }) => {
     <div className="movie-list">
       <div className="movie-list__header">
         <h1>TV 2 Play Films</h1>
-        <p>Discover amazing movies and series</p>
+        <p>Discover amazing movies and series across different categories</p>
       </div>
       
-      <div className="movie-list__grid">
-        {movies.map((movie, index) => (
-          <MovieCard
-            key={movie.id || movie.url || index}
-            movie={movie}
-            onClick={onMovieClick}
+      <div className="movie-list__categories">
+        {categories.map((category, index) => (
+          <CategorySection
+            key={category.id || index}
+            category={category}
+            onMovieClick={onMovieClick}
           />
         ))}
       </div>

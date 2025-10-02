@@ -1,0 +1,161 @@
+.category-section {
+  margin-bottom: 40px;
+}
+
+.category-section__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  padding: 0 20px;
+}
+
+.category-section__title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin: 0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.category-section__count {
+  font-size: 0.9rem;
+  color: #7f8c8d;
+  background: #ecf0f1;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-weight: 500;
+}
+
+.category-section__scroll-container {
+  position: relative;
+  overflow: hidden;
+  margin: 0 -10px; /* Negative margin to allow cards to extend to edges */
+}
+
+.category-section__movies {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding: 0 20px 10px 20px; /* Bottom padding for scrollbar */
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch; /* iOS smooth scrolling */
+}
+
+/* Custom scrollbar styling */
+.category-section__movies::-webkit-scrollbar {
+  height: 6px;
+}
+
+.category-section__movies::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.category-section__movies::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 3px;
+}
+
+.category-section__movies::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+}
+
+.category-section__movie-item {
+  flex: 0 0 280px; /* Fixed width, no shrinking or growing */
+  display: flex;
+}
+
+.category-section__movie-item .movie-card {
+  width: 100%;
+  max-width: none; /* Remove max-width constraint from MovieCard */
+}
+
+/* Fade effects at the edges */
+.category-section__scroll-container::before,
+.category-section__scroll-container::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 10px; /* Account for scrollbar */
+  width: 20px;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.category-section__scroll-container::before {
+  left: 0;
+  background: linear-gradient(to right, rgba(248, 249, 250, 1), rgba(248, 249, 250, 0));
+}
+
+.category-section__scroll-container::after {
+  right: 0;
+  background: linear-gradient(to left, rgba(248, 249, 250, 1), rgba(248, 249, 250, 0));
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .category-section {
+    margin-bottom: 32px;
+  }
+  
+  .category-section__header {
+    padding: 0 16px;
+    margin-bottom: 16px;
+  }
+  
+  .category-section__title {
+    font-size: 1.25rem;
+  }
+  
+  .category-section__count {
+    font-size: 0.8rem;
+    padding: 3px 10px;
+  }
+  
+  .category-section__movies {
+    padding: 0 16px 10px 16px;
+    gap: 12px;
+  }
+  
+  .category-section__movie-item {
+    flex: 0 0 250px;
+  }
+  
+  .category-section__scroll-container::before,
+  .category-section__scroll-container::after {
+    width: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .category-section__header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .category-section__movie-item {
+    flex: 0 0 220px;
+  }
+  
+  .category-section__movies {
+    gap: 10px;
+  }
+}
+
+/* Focus and keyboard navigation */
+.category-section__movies:focus {
+  outline: 2px solid #667eea;
+  outline-offset: 2px;
+}
+
+/* Smooth scroll behavior for programmatic scrolling */
+@media (prefers-reduced-motion: no-preference) {
+  .category-section__movies {
+    scroll-behavior: smooth;
+  }
+}
